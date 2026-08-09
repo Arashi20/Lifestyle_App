@@ -13,6 +13,8 @@
     {% if result.ingredients %}
     <h3>Ingredients</h3>
     <p class="ingredients-text">{{ result.ingredients }}</p>
+    {% else %}
+    <p class="empty-state">No ingredient list on file for this product in Open Beauty Facts — you can save it as-is and add ingredients later, or <a href="{{ url_for('scanner.ocr_scan') }}">scan them from a photo</a> right now.</p>
     {% endif %}
 </div>
 

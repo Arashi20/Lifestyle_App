@@ -14,9 +14,15 @@ function onScanSuccess(decodedText) {
 // span, making it harder for the decoder to lock on. Requesting a higher
 // resolution stream also helps: browsers often default a webcam to ~640x480,
 // which is too coarse to resolve a barcode's thin bars up close.
+//
+// videoConstraints overrides the library's own camera-selection logic
+// entirely (including the camera picker dropdown it renders), so
+// facingMode has to be set here too — otherwise it falls back to whatever
+// the browser defaults to with no facing preference, which on iOS is the
+// front camera.
 const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
     fps: 10,
     qrbox: { width: 300, height: 120 },
-    videoConstraints: { width: { ideal: 1280 }, height: { ideal: 720 } },
+    videoConstraints: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "environment" },
 });
 html5QrcodeScanner.render(onScanSuccess);
