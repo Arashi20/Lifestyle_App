@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Scan Ingredients Photo{% endblock %}
+
+{% block content %}
+<h1>Scan ingredients from a photo</h1>
+<p class="card-subtitle">Take a clear, well-lit photo of the ingredient list. You'll get a chance to review and edit the extracted text before it's saved anywhere.</p>
+
+{% if error %}
+<p class="empty-state">{{ error }}</p>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data" class="form">
+    <label>Photo
+        <input type="file" name="photo" accept="image/*" capture="environment" required>
+    </label>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Extract text</button>
+        <a href="{{ url_for('scanner.scanner_page') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

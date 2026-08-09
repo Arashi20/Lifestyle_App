@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<h1>Edit Profile</h1>
+
+<form method="POST" class="form">
+    <label>Skin type
+        <input type="text" name="skin_type" value="{{ profile.skin_type or '' }}" placeholder="combination, sensitive...">
+    </label>
+
+    <label>Preferred brands
+        <textarea name="preferred_brands" rows="2">{{ profile.preferred_brands or '' }}</textarea>
+    </label>
+
+    <label>Preferred ingredients
+        <textarea name="preferred_ingredients" rows="2">{{ profile.preferred_ingredients or '' }}</textarea>
+    </label>
+
+    <label>Notes
+        <textarea name="notes" rows="4" placeholder="anything else worth remembering">{{ profile.notes or '' }}</textarea>
+    </label>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('profile.home') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

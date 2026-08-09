@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Ingredient Watchlist{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Ingredient Watchlist</h1>
+    <a href="{{ url_for('watchlist.new_watchlist_item') }}" class="btn btn-primary">+ Add ingredient</a>
+</div>
+
+<div class="filters">
+    <a href="{{ url_for('watchlist.list_watchlist') }}" class="{{ 'active' if not severity_filter }}">All</a>
+    <a href="{{ url_for('watchlist.list_watchlist', severity='avoid') }}" class="{{ 'active' if severity_filter == 'avoid' }}">Avoid</a>
+    <a href="{{ url_for('watchlist.list_watchlist', severity='caution') }}" class="{{ 'active' if severity_filter == 'caution' }}">Caution</a>
+    <a href="{{ url_for('watchlist.list_watchlist', severity='good') }}" class="{{ 'active' if severity_filter == 'good' }}">Good</a>
+</div>
+
+{% if items %}
+<div class="card-grid">
+    {% for item in items %}
+    <div class="card">
+        <div class="card-title-row">
+            <div class="card-title">{{ item.ingredient_name }}</div>
+            <span class="badge severity-{{ item.severity }}">{{ item.severity }}</span>
+        </div>
+        {% if item.reason %}<p class="card-subtitle">{{ item.reason }}</p>{% endif %}
+        <div class="form-actions">
+            <a href="{{ url_for('watchlist.edit_watchlist_item', item_id=item.id) }}" class="btn btn-secondary">Edit</a>
+            <button type="button" class="btn btn-danger" data-confirm="delete-watchlist-{{ item.id }}">Delete</button>
+        </div>
+        <dialog id="delete-watchlist-{{ item.id }}" class="confirm-dialog">
+            <p>Remove "{{ item.ingredient_name }}" from your watchlist?</p>
+            <div class="form-actions">
+                <form method="dialog"><button type="submit" class="btn btn-secondary">Cancel</button></form>
+                <form action="{{ url_for('watchlist.delete_watchlist_item', item_id=item.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </dialog>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">
+    {% if severity_filter %}No ingredients with this rating yet.{% else %}Nothing on your watchlist yet. Add ingredients you want flagged.{% endif %}
+</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Scanner{% endblock %}
+
+{% block content %}
+<h1>Scan a product</h1>
+
+<div id="reader" style="width: 100%; max-width: 500px;"></div>
+<div id="scan-result"></div>
+
+<p class="card-subtitle">No barcode, or scanning isn't cooperating? <a href="{{ url_for('scanner.ocr_scan') }}">Scan ingredients from a photo instead</a>.</p>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="{{ url_for('static', filename='js/barcode.js') }}"></script>
+{% endblock %}

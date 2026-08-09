@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Haircuts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Haircuts</h1>
+    <a href="{{ url_for('haircuts.new_haircut') }}" class="btn btn-primary">+ Add haircut</a>
+</div>
+
+{% if haircuts %}
+<div class="card-grid">
+    {% for cut in haircuts %}
+    <a href="{{ url_for('haircuts.view_haircut', haircut_id=cut.id) }}" class="card">
+        <div class="card-title-row">
+            <div class="card-title">{{ cut.salon_or_barber or "Unknown" }}</div>
+            {% if cut.rating %}<span class="rating">{{ "★" * cut.rating }}{{ "☆" * (5 - cut.rating) }}</span>{% endif %}
+        </div>
+        <div class="card-subtitle">{{ cut.date }}{% if cut.photo_url %} &middot; 📷{% endif %}</div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No haircuts logged yet.</p>
+{% endif %}
+{% endblock %}

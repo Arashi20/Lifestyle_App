@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Products</h1>
+    <a href="{{ url_for('products.new_product') }}" class="btn btn-primary">+ Add product</a>
+</div>
+
+<div class="filters">
+    <a href="{{ url_for('products.list_products') }}" class="{{ 'active' if not status_filter }}">All</a>
+    <a href="{{ url_for('products.list_products', status='wishlist') }}" class="{{ 'active' if status_filter == 'wishlist' }}">Wishlist</a>
+    <a href="{{ url_for('products.list_products', status='currently_using') }}" class="{{ 'active' if status_filter == 'currently_using' }}">Currently using</a>
+    <a href="{{ url_for('products.list_products', status='finished') }}" class="{{ 'active' if status_filter == 'finished' }}">Finished</a>
+    <a href="{{ url_for('products.list_products', status='abandoned') }}" class="{{ 'active' if status_filter == 'abandoned' }}">Abandoned</a>
+</div>
+
+{% if products %}
+<div class="card-grid">
+    {% for product in products %}
+    <a href="{{ url_for('products.view_product', product_id=product.id) }}" class="card">
+        <div class="card-title-row">
+            <div class="card-title">{{ product.name }}</div>
+            {% if product.rating %}<span class="rating">{{ "★" * product.rating }}{{ "☆" * (5 - product.rating) }}</span>{% endif %}
+        </div>
+        <div class="card-subtitle">{{ product.brand or "—" }}</div>
+        <div class="card-meta">
+            <span class="badge status-{{ product.status }}">{{ product.status.replace('_', ' ') }}</span>
+            {% if flag_severity[product.id] %}<span class="badge severity-{{ flag_severity[product.id] }}">⚠ flagged</span>{% endif %}
+            {% if scores[product.id] is not none %}<span class="badge severity-{{ tiers[product.id] }}">{{ scores[product.id] }}/100</span>{% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No products yet. Add your first one.</p>
+{% endif %}
+{% endblock %}

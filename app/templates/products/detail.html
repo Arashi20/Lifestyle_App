@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ product.name }}</h1>
+    <div class="form-actions">
+        <a href="{{ url_for('products.edit_product', product_id=product.id) }}" class="btn btn-secondary">Edit</a>
+        <button type="button" class="btn btn-danger" data-confirm="delete-product-{{ product.id }}">Delete</button>
+    </div>
+</div>
+
+<dialog id="delete-product-{{ product.id }}" class="confirm-dialog">
+    <p>Delete "{{ product.name }}"? This can't be undone.</p>
+    <div class="form-actions">
+        <form method="dialog"><button type="submit" class="btn btn-secondary">Cancel</button></form>
+        <form action="{{ url_for('products.delete_product', product_id=product.id) }}" method="POST">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</dialog>
+
+<p class="card-subtitle">{{ product.brand or "—" }} &middot; {{ product.category or "uncategorized" }}</p>
+
+<span class="badge status-{{ product.status }}">{{ product.status.replace('_', ' ') }}</span>
+{% if product.rating %}<span class="rating">{{ "★" * product.rating }}{{ "☆" * (5 - product.rating) }}</span>{% endif %}
+{% if score is not none %}<span class="badge score-badge severity-{{ tier }}">{{ score }}/100</span>{% endif %}
+
+{% if product.skin_notes %}
+<h3>Notes</h3>
+<p>{{ product.skin_notes }}</p>
+{% endif %}
+
+{% if product.ingredients %}
+<h3>Ingredients</h3>
+<p class="ingredients-text">{{ product.ingredients }}</p>
+{% endif %}
+
+{% if concerning %}
+<h3>⚠ Watch out for</h3>
+<ul class="flagged-list">
+    {% for item in concerning %}
+    <li>
+        <span class="badge severity-{{ item.severity }}">{{ item.severity }}</span>
+        <strong>{{ item.ingredient_name }}</strong>{% if item.reason %} — {{ item.reason }}{% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if good_matches %}
+<h3>✓ Good ingredients spotted</h3>
+<ul class="flagged-list">
+    {% for item in good_matches %}
+    <li>
+        <span class="badge severity-{{ item.severity }}">{{ item.severity }}</span>
+        <strong>{{ item.ingredient_name }}</strong>{% if item.reason %} — {{ item.reason }}{% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

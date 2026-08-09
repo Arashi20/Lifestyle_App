@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ haircut.salon_or_barber or "Haircut" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ haircut.salon_or_barber or "Unknown" }}</h1>
+    <div class="form-actions">
+        <a href="{{ url_for('haircuts.edit_haircut', haircut_id=haircut.id) }}" class="btn btn-secondary">Edit</a>
+        <button type="button" class="btn btn-danger" data-confirm="delete-haircut-{{ haircut.id }}">Delete</button>
+    </div>
+</div>
+
+<dialog id="delete-haircut-{{ haircut.id }}" class="confirm-dialog">
+    <p>Delete this haircut? This can't be undone.</p>
+    <div class="form-actions">
+        <form method="dialog"><button type="submit" class="btn btn-secondary">Cancel</button></form>
+        <form action="{{ url_for('haircuts.delete_haircut', haircut_id=haircut.id) }}" method="POST">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</dialog>
+
+<p class="card-subtitle">{{ haircut.date }}</p>
+
+{% if haircut.rating %}<span class="rating">{{ "★" * haircut.rating }}{{ "☆" * (5 - haircut.rating) }}</span>{% endif %}
+
+{% if haircut.photo_url %}
+<p><a href="{{ haircut.photo_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">📷 View photo</a></p>
+{% endif %}
+
+{% if haircut.description %}
+<h3>Description</h3>
+<p>{{ haircut.description }}</p>
+{% endif %}
+
+{% if haircut.how_to_request %}
+<h3>How to request this again</h3>
+<p>{{ haircut.how_to_request }}</p>
+{% endif %}
+{% endblock %}

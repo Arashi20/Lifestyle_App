@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.Python
+build/
+dist/
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Flask-Migrate cache (keep migrations/versions/*.py, ignore local cache only)
+migrations/__pycache__/
+
+# Editor / OS
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Uploaded/scanned images (if stored locally instead of a bucket)
+uploads/
+static/uploads/
+
+# Tesseract OCR temp files
+*.tif
+
+# Claude
+CLAUDE.md

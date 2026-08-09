@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if item else "Add" }} Watchlist Ingredient{% endblock %}
+
+{% block content %}
+<h1>{{ "Edit" if item else "Add" }} Watchlist Ingredient</h1>
+
+<form method="POST" class="form">
+    <label>Ingredient name
+        <input type="text" name="ingredient_name" value="{{ item.ingredient_name if item else '' }}" required placeholder="fragrance, alcohol denat...">
+    </label>
+
+    <label>Reason
+        <textarea name="reason" rows="3" placeholder="why it's rated this way (irritant, breakout trigger, soothing, etc.)">{{ item.reason if item else '' }}</textarea>
+    </label>
+
+    <label>Severity
+        <select name="severity">
+            {% for value, label in [("good", "Good"), ("caution", "Caution"), ("avoid", "Avoid")] %}
+            <option value="{{ value }}" {{ "selected" if item and item.severity == value }}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('watchlist.list_watchlist') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

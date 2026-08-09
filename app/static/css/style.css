@@ -1,0 +1,287 @@
+:root {
+    --bg: #FBF6F0;
+    --surface: #FFFFFF;
+    --border: #E8DFD1;
+    --text: #3A342C;
+    --text-muted: #9C9284;
+
+    --accent: #A3AE8E;
+    --accent-dark: #798467;
+    --accent-light: #E9EDE3;
+
+    --accent-2: #D8A79A;
+    --accent-2-dark: #A9695A;
+    --accent-2-light: #F6E9E4;
+
+    --danger: #BC6156;
+    --danger-dark: #8B4A40;
+    --danger-light: #F3E1DE;
+
+    --font-serif: "Fraunces", Georgia, serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    --shadow: 0 1px 2px rgba(58, 52, 44, 0.04), 0 4px 12px rgba(58, 52, 44, 0.05);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+}
+
+/* Free-text fields (notes, descriptions, ingredients, reasons...) are
+   entered via <textarea>, so preserve the line breaks/paragraphs the user
+   actually typed instead of the browser's default whitespace collapsing. */
+p, .flagged-list li {
+    white-space: pre-line;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.01em;
+}
+
+h3 {
+    margin: 1.5rem 0 0.5rem;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 2rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar .brand {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 0.4rem;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
+}
+
+.nav-links a:hover { color: var(--accent-dark); }
+
+.nav-logout { margin-left: 1.5rem; }
+.nav-logout .link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: inherit;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+.nav-logout .link-btn:hover { color: var(--accent-dark); }
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.filters { margin-bottom: 1.5rem; }
+.filters a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-right: 1.25rem;
+    padding-bottom: 4px;
+    font-size: 0.95rem;
+}
+.filters a.active { color: var(--accent-dark); border-bottom: 2px solid var(--accent); }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    display: block;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+a.card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.card-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+.card-title { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; }
+.card-title-row .card-title { min-width: 0; overflow-wrap: break-word; }
+.card-title-row .rating { flex-shrink: 0; font-size: 0.85rem; }
+.card-subtitle { color: var(--text-muted); font-size: 0.9rem; }
+.card-meta { margin-top: 0.6rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+
+.card .form-actions { margin-top: 0.6rem; }
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+}
+
+.badge.status-wishlist { background: var(--accent-2-light); color: var(--accent-2-dark); }
+.badge.status-currently_using { background: var(--accent-light); color: var(--accent-dark); }
+.badge.status-finished { background: var(--border); color: var(--text-muted); }
+.badge.status-abandoned { background: var(--border); color: var(--text-muted); }
+
+.badge.severity-avoid { background: var(--danger-light); color: var(--danger-dark); }
+.badge.severity-caution { background: var(--border); color: var(--text-muted); }
+.badge.severity-good { background: var(--accent-light); color: var(--accent-dark); }
+
+.score-badge {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 4px 14px;
+}
+
+.rating { color: var(--accent-2-dark); letter-spacing: 1px; }
+
+.btn {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { border-color: var(--accent); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { opacity: 0.9; }
+
+.form { display: flex; flex-direction: column; gap: 1.1rem; max-width: 500px; }
+.form label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; color: var(--text-muted); }
+.form input, .form select, .form textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+}
+.form input:focus, .form select:focus, .form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+}
+.form-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.flash-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.flash {
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+}
+.flash-success { background: var(--accent-light); color: var(--accent-dark); border-color: var(--accent); }
+.flash-error { background: var(--danger-light); color: var(--danger-dark); border-color: var(--danger); }
+
+.confirm-dialog {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 360px;
+    width: calc(100% - 2rem);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    font-family: var(--font-sans);
+}
+.confirm-dialog::backdrop {
+    background: rgba(58, 52, 44, 0.35);
+}
+.confirm-dialog p {
+    margin: 0 0 1.25rem;
+}
+.confirm-dialog .form-actions {
+    justify-content: flex-end;
+}
+
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    text-decoration: none;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.stat-tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.stat-number { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600; color: var(--accent-dark); }
+.stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
+
+.profile-card p { margin: 0 0 0.6rem; }
+.profile-card p:last-child { margin-bottom: 0; }
+.profile-card strong { color: var(--text); font-weight: 600; }
+.profile-card .profile-notes { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--border); }
+
+.scan-photo { max-width: 220px; border-radius: 8px; margin-top: 0.5rem; }
+
+.flagged-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.flagged-list li { color: var(--text); font-size: 0.95rem; }
+.flagged-list .badge { margin-right: 0.5rem; }
+
+.empty-state { color: var(--text-muted); font-style: italic; }
+.ingredients-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }

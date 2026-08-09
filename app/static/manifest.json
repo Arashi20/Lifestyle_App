@@ -1,0 +1,14 @@
+{
+    "name": "Lifestyle Tracker",
+    "short_name": "AMB",
+    "description": "Personal skincare, haircare, and ingredient tracker.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#FBF6F0",
+    "theme_color": "#A3AE8E",
+    "icons": [
+        { "src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "/static/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    ]
+}

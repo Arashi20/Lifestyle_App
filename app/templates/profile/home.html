@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Hi, Arash</h1>
+    <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-secondary">Edit profile</a>
+</div>
+
+<div class="stat-row">
+    <a href="{{ url_for('products.list_products', status='currently_using') }}" class="stat-tile">
+        <div class="stat-number">{{ currently_using_count }}</div>
+        <div class="stat-label">Currently using</div>
+    </a>
+    <a href="{{ url_for('products.list_products', status='wishlist') }}" class="stat-tile">
+        <div class="stat-number">{{ wishlist_count }}</div>
+        <div class="stat-label">Wishlist</div>
+    </a>
+</div>
+
+<h3>About me</h3>
+{% if profile.skin_type or profile.preferred_brands or profile.preferred_ingredients or profile.notes %}
+<div class="card profile-card">
+    {% if profile.skin_type %}<p><strong>Skin type:</strong> {{ profile.skin_type }}</p>{% endif %}
+    {% if profile.preferred_brands %}<p><strong>Preferred brands:</strong> {{ profile.preferred_brands }}</p>{% endif %}
+    {% if profile.preferred_ingredients %}<p><strong>Preferred ingredients:</strong> {{ profile.preferred_ingredients }}</p>{% endif %}
+    {% if profile.notes %}<p class="profile-notes"><strong>Notes:</strong> {{ profile.notes }}</p>{% endif %}
+</div>
+{% else %}
+<p class="empty-state">Nothing here yet. <a href="{{ url_for('profile.edit_profile') }}">Add your skin type and preferences</a>.</p>
+{% endif %}
+
+<h3>Favorite haircuts</h3>
+{% if favorite_haircuts %}
+<div class="card-grid">
+    {% for cut in favorite_haircuts %}
+    <a href="{{ url_for('haircuts.view_haircut', haircut_id=cut.id) }}" class="card">
+        <div class="card-title">{{ cut.salon_or_barber or "Unknown" }}</div>
+        <div class="card-subtitle">{{ cut.date }}</div>
+        <span class="rating">{{ "★" * cut.rating }}{{ "☆" * (5 - cut.rating) }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No favorite haircuts yet — rate a haircut 4★ or higher to see it here.</p>
+{% endif %}
+
+<h3>Haircut photos</h3>
+<p><a href="https://www.amazon.de/photos/album/8dYxfZZaQEC1hdIXL6GfkA" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">📷 View full album</a></p>
+
+<h3>Daily supplements</h3>
+<div class="card profile-card">
+    <p><strong>After breakfast:</strong> Vitamin D3 20,000 IU, Omega-3 fish oil (1200mg EPA / 900mg DHA)</p>
+    <p><strong>Before sleep:</strong> Magnesium bisglycinate 1400mg</p>
+    <p><strong>Anytime:</strong> Creatine 3-8g</p>
+</div>
+
+<h3>Sleep schedule</h3>
+<div class="card profile-card">
+    {% if profile.sleep_duration_display %}
+    <p><strong>{{ profile.sleep_duration_display }}</strong> of sleep — {{ profile.sleep_time.strftime('%H:%M') }} to {{ profile.wake_time.strftime('%H:%M') }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('profile.update_sleep_schedule') }}" class="form">
+        <label>Sleep time
+            <input type="time" name="sleep_time" value="{{ profile.sleep_time.strftime('%H:%M') if profile.sleep_time else '' }}">
+        </label>
+        <label>Wake-up time
+            <input type="time" name="wake_time" value="{{ profile.wake_time.strftime('%H:%M') if profile.wake_time else '' }}">
+        </label>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
