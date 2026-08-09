@@ -1,4 +1,4 @@
 providers = ["python"]
 
 [phases.setup]
-aptPkgs = ["tesseract-ocr", "libpq5"]
+aptPkgs = ["tesseract-ocr"]

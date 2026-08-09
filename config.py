@@ -15,9 +15,15 @@ class Config:
     # Railway provides DATABASE_URL for the Postgres addon.
     # Falls back to local sqlite for quick local dev without Postgres running.
     _db_url = os.environ.get("DATABASE_URL", "sqlite:///local.db")
-    # Railway/Heroku-style urls sometimes use postgres:// which SQLAlchemy 1.4+ rejects
+    # Use the pure-Python pg8000 driver instead of psycopg2 — psycopg2 needs
+    # the native libpq.so.5 at runtime, which Nixpacks' build doesn't reliably
+    # provide (a GLIBC/library-path mismatch, not just a missing-package
+    # issue — adding libpq5 via aptPkgs did not fix it). pg8000 has no native
+    # dependencies at all, avoiding the problem entirely.
     if _db_url.startswith("postgres://"):
-        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+        _db_url = _db_url.replace("postgres://", "postgresql+pg8000://", 1)
+    elif _db_url.startswith("postgresql://"):
+        _db_url = _db_url.replace("postgresql://", "postgresql+pg8000://", 1)
 
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
