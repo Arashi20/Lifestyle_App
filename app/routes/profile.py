@@ -12,7 +12,7 @@ profile_bp = Blueprint("profile", __name__)
 def home():
     profile = Profile.get_or_create()
     favorite_haircuts = (
-        Haircut.query.filter(Haircut.rating >= 4).order_by(Haircut.rating.desc(), Haircut.date.desc()).limit(3).all()
+        Haircut.query.filter(Haircut.rating >= 8).order_by(Haircut.rating.desc(), Haircut.date.desc()).limit(3).all()
     )
     currently_using_count = Product.query.filter_by(status="currently_using").count()
     wishlist_count = Product.query.filter_by(status="wishlist").count()

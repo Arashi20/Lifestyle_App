@@ -13,7 +13,7 @@
     <a href="{{ url_for('haircuts.view_haircut', haircut_id=cut.id) }}" class="card">
         <div class="card-title-row">
             <div class="card-title">{{ cut.salon_or_barber or "Unknown" }}</div>
-            {% if cut.rating %}<span class="rating">{{ "★" * cut.rating }}{{ "☆" * (5 - cut.rating) }}</span>{% endif %}
+            {% if cut.rating %}<span class="rating">{{ cut.rating }}/10</span>{% endif %}
         </div>
         <div class="card-subtitle">{{ cut.date }}{% if cut.photo_url %} &middot; 📷{% endif %}</div>
     </a>

@@ -40,7 +40,7 @@ class Haircut(db.Model):
     date = db.Column(db.Date, nullable=False, default=date.today)
     description = db.Column(db.Text, nullable=True)
     how_to_request = db.Column(db.Text, nullable=True)
-    rating = db.Column(db.Integer, nullable=True)  # 1-5
+    rating = db.Column(db.Integer, nullable=True)  # 1-10
     photo_url = db.Column(db.String(300), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
