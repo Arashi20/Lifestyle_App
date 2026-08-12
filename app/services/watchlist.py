@@ -15,6 +15,17 @@ def _split_ingredients(ingredients_text):
     return [part.replace("\x00", ",").strip() for part in protected.split(",") if part.strip()]
 
 
+def _ingredient_position(ingredient_name, parts):
+    """Index of the first split ingredient part containing ingredient_name,
+    or None if it's not found there (shouldn't normally happen for an
+    already-matched item, but stay defensive)."""
+    name_lower = ingredient_name.lower()
+    for idx, part in enumerate(parts):
+        if name_lower in part.lower():
+            return idx
+    return None
+
+
 def find_flagged_ingredients(ingredients_text, watchlist_items=None):
     """Watchlist entries whose ingredient_name appears in ingredients_text.
 
@@ -45,9 +56,26 @@ def worst_severity(flagged_items):
 # Retune here if it doesn't feel right against real products.
 SCORE_BASE = 60
 SCORE_GOOD_POINTS = 9
+# Good matches beyond this don't add more bonus. Without a cap, a well-
+# formulated product stacking many popular actives (increasingly common as
+# the "good" watchlist grows) blows well past 100 before the length penalty
+# can claw it back — e.g. a 9-good-match product hit 119 pre-clamp, which
+# just looked identical to a barely-over-100 product once capped.
+SCORE_GOOD_MATCH_CAP = 4
 SCORE_CAUTION_PENALTY = 8
 SCORE_AVOID_PENALTY = 16
 SCORE_LENGTH_PENALTY_PER_INGREDIENT = 0.4
+
+# INCI lists are legally ordered by descending concentration, but only
+# strictly for ingredients above 1% — below that (where most "hero actives"
+# actually sit), order isn't regulated, so we can't claim fine-grained
+# position precision. A coarse early/late split is honest about that: a
+# "good" match in the first half of the list gets full credit, one in the
+# second half gets reduced credit (still some — a small amount isn't
+# nothing). By request, this only applies to "good" matches — avoid/caution
+# stay fully penalized regardless of position.
+SCORE_GOOD_LATE_POSITION_THRESHOLD = 0.5
+SCORE_GOOD_LATE_POSITION_WEIGHT = 0.5
 
 SCORE_TIER_THRESHOLDS = (("good", 70), ("caution", 40))  # else "avoid"
 
@@ -62,14 +90,31 @@ def goodness_score(ingredients_text, watchlist_items=None):
         return None
 
     flagged = find_flagged_ingredients(ingredients_text, watchlist_items)
-    good_count = sum(1 for item in flagged if item.severity == "good")
+    parts = _split_ingredients(ingredients_text)
+    ingredient_count = len(parts)
     caution_count = sum(1 for item in flagged if item.severity == "caution")
     avoid_count = sum(1 for item in flagged if item.severity == "avoid")
-    ingredient_count = len(_split_ingredients(ingredients_text))
+
+    good_weights = []
+    for item in flagged:
+        if item.severity != "good":
+            continue
+        position = _ingredient_position(item.ingredient_name, parts)
+        is_late = (
+            position is not None
+            and ingredient_count
+            and (position / ingredient_count) >= SCORE_GOOD_LATE_POSITION_THRESHOLD
+        )
+        good_weights.append(SCORE_GOOD_LATE_POSITION_WEIGHT if is_late else 1.0)
+
+    # When capping, keep the highest-weight (earliest / full-credit) matches
+    # first rather than an arbitrary subset.
+    good_weights.sort(reverse=True)
+    good_bonus_weight = sum(good_weights[:SCORE_GOOD_MATCH_CAP])
 
     score = (
         SCORE_BASE
-        + good_count * SCORE_GOOD_POINTS
+        + good_bonus_weight * SCORE_GOOD_POINTS
         - caution_count * SCORE_CAUTION_PENALTY
         - avoid_count * SCORE_AVOID_PENALTY
         - ingredient_count * SCORE_LENGTH_PENALTY_PER_INGREDIENT
