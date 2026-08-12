@@ -1,4 +1,18 @@
+import re
+
 from app.models import WatchlistItem
+
+# Matches the comma inside a chemical locant prefix like "1,2-Hexanediol" or
+# "2,3-Butanediol", so it survives ingredient splitting instead of being
+# treated as a separator between two fake ingredients ("1" and
+# "2-Hexanediol"). Deliberately narrow — this can't perfectly parse every
+# INCI list, but it handles the common case.
+_LOCANT_COMMA = re.compile(r"(\d),(\d+-[A-Za-z])")
+
+
+def _split_ingredients(ingredients_text):
+    protected = _LOCANT_COMMA.sub(lambda m: m.group(1) + "\x00" + m.group(2), ingredients_text)
+    return [part.replace("\x00", ",").strip() for part in protected.split(",") if part.strip()]
 
 
 def find_flagged_ingredients(ingredients_text, watchlist_items=None):
@@ -51,7 +65,7 @@ def goodness_score(ingredients_text, watchlist_items=None):
     good_count = sum(1 for item in flagged if item.severity == "good")
     caution_count = sum(1 for item in flagged if item.severity == "caution")
     avoid_count = sum(1 for item in flagged if item.severity == "avoid")
-    ingredient_count = len([part for part in ingredients_text.split(",") if part.strip()])
+    ingredient_count = len(_split_ingredients(ingredients_text))
 
     score = (
         SCORE_BASE

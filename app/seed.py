@@ -38,6 +38,8 @@ DEFAULT_WATCHLIST_ITEMS = [
     ("Squalane", "good", "Lightweight, non-comedogenic emollient that mimics skin's natural oils"),
     ("Allantoin", "good", "Soothing, skin-conditioning agent with very low irritation risk"),
     ("Bisabolol", "good", "Anti-inflammatory and soothing; low sensitization risk"),
+    ("Beta-Glucan", "good", "Soothing polysaccharide (oat/yeast-derived) that supports the skin barrier and holds water well; often recommended for sensitive/reactive skin"),
+    ("Adenosine", "good", "Well-studied anti-aging active; recognized by Korea's cosmetic regulator (MFDS) as a functional anti-wrinkle ingredient requiring efficacy data to make that claim"),
 ]
 
 
