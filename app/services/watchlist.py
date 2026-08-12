@@ -55,7 +55,7 @@ def worst_severity(flagged_items):
 # Tunable weights for goodness_score — a judgment call, not a fixed formula.
 # Retune here if it doesn't feel right against real products.
 SCORE_BASE = 60
-SCORE_GOOD_POINTS = 9
+SCORE_GOOD_POINTS = 10
 # Good matches beyond this don't add more bonus. Without a cap, a well-
 # formulated product stacking many popular actives (increasingly common as
 # the "good" watchlist grows) blows well past 100 before the length penalty
