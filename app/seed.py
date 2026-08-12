@@ -40,6 +40,11 @@ DEFAULT_WATCHLIST_ITEMS = [
     ("Bisabolol", "good", "Anti-inflammatory and soothing; low sensitization risk"),
     ("Beta-Glucan", "good", "Soothing polysaccharide (oat/yeast-derived) that supports the skin barrier and holds water well; often recommended for sensitive/reactive skin"),
     ("Adenosine", "good", "Well-studied anti-aging active; recognized by Korea's cosmetic regulator (MFDS) as a functional anti-wrinkle ingredient requiring efficacy data to make that claim"),
+    ("Zinc Oxide", "good", "Physical/mineral UV filter; broad-spectrum, minimal absorption, and commonly recommended for sensitive or rosacea-prone skin. Can leave a white cast, but that's a cosmetic/texture issue, not a skin-tolerability one"),
+    ("Madecassoside", "good", "One of the primary active triterpenes in Centella Asiatica; well-studied for wound-healing and barrier repair"),
+    ("Asiaticoside", "good", "Centella Asiatica triterpene; promotes collagen synthesis and wound healing"),
+    ("Asiatic Acid", "good", "Centella Asiatica triterpene; anti-inflammatory and antioxidant"),
+    ("Madecassic Acid", "good", "Centella Asiatica triterpene; anti-inflammatory, often studied alongside madecassoside"),
 ]
 
 
