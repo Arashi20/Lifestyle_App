@@ -63,6 +63,17 @@ SCORE_GOOD_POINTS = 9
 # just looked identical to a barely-over-100 product once capped.
 SCORE_GOOD_MATCH_CAP = 4
 SCORE_CAUTION_PENALTY = 8
+# Multiple caution matches are often the same underlying characteristic
+# counted several times rather than independent concerns — e.g. "Fragrance"
+# plus its own individually-disclosed components like Limonene/Linalool is
+# really just one fragranced formulation, not three separate risks. Without
+# this cap, a product that transparently discloses its fragrance allergens
+# (as EU regulation requires above a small threshold) scores *worse* than a
+# vaguer product that just says "Fragrance" with nothing broken out — the
+# opposite of what should happen. No such cap on avoid: those entries are
+# typically genuinely distinct concerns, and avoid stays fully penalized
+# regardless by design.
+SCORE_CAUTION_MATCH_CAP = 2
 SCORE_AVOID_PENALTY = 16
 SCORE_LENGTH_PENALTY_PER_INGREDIENT = 0.4
 
@@ -115,7 +126,7 @@ def goodness_score(ingredients_text, watchlist_items=None):
     score = (
         SCORE_BASE
         + good_bonus_weight * SCORE_GOOD_POINTS
-        - caution_count * SCORE_CAUTION_PENALTY
+        - min(caution_count, SCORE_CAUTION_MATCH_CAP) * SCORE_CAUTION_PENALTY
         - avoid_count * SCORE_AVOID_PENALTY
         - ingredient_count * SCORE_LENGTH_PENALTY_PER_INGREDIENT
     )
