@@ -1,0 +1,3 @@
+# The connector needs no system packages: pg8000 is pure Python, and the OCR
+# engine the main app installs is not used here.
+providers = ["python"]

@@ -65,3 +65,11 @@ Railway's default build doesn't include. Set the same environment variables
 from `.env.example` (with real values) in Railway's project settings,
 including a fresh `SECRET_KEY` and login credentials via `flask set-password`
 run against the production database.
+
+### Claude connector (MCP)
+
+The `mcp/` folder is a separate, **read-only** service that exposes the
+profile, products (with ingredient scores), haircuts and ingredient watchlist
+to Claude as a custom connector. Deploy it as a second Railway service with
+its root directory set to `mcp`, sharing `DATABASE_URL`, `AUTH_USERNAME` and
+`AUTH_PASSWORD_HASH` with this one. See [`mcp/README.md`](mcp/README.md).
