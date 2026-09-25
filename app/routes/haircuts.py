@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, flash, url_for
 
 from app import db
 from app.models import Haircut
+from app.security import is_safe_external_url
 
 haircuts_bp = Blueprint("haircuts", __name__, url_prefix="/haircuts")
 
@@ -12,6 +13,18 @@ def _parse_date(value):
     if not value:
         return date.today()
     return datetime.strptime(value, "%Y-%m-%d").date()
+
+
+def _photo_url(value):
+    """Keep only http(s) links: the URL is rendered as an href, so a
+    javascript: URL would run script when clicked."""
+    value = (value or "").strip()
+    if not value:
+        return None
+    if not is_safe_external_url(value):
+        flash("Photo link ignored — it must start with http:// or https://.", "error")
+        return None
+    return value
 
 
 @haircuts_bp.route("/")
@@ -29,7 +42,7 @@ def new_haircut():
             description=request.form.get("description"),
             how_to_request=request.form.get("how_to_request"),
             rating=request.form.get("rating") or None,
-            photo_url=request.form.get("photo_url"),
+            photo_url=_photo_url(request.form.get("photo_url")),
         )
         db.session.add(haircut)
         db.session.commit()
@@ -53,7 +66,7 @@ def edit_haircut(haircut_id):
         haircut.description = request.form.get("description")
         haircut.how_to_request = request.form.get("how_to_request")
         haircut.rating = request.form.get("rating") or None
-        haircut.photo_url = request.form.get("photo_url")
+        haircut.photo_url = _photo_url(request.form.get("photo_url"))
         db.session.commit()
         flash("Changes saved.", "success")
         return redirect(url_for("haircuts.view_haircut", haircut_id=haircut.id))

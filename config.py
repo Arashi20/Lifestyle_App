@@ -9,12 +9,34 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# Production means "not a local sqlite dev run": Railway sets its own
+# environment variable, or we're pointed at a real Postgres database.
+_raw_db_url = os.environ.get("DATABASE_URL", "sqlite:///local.db")
+IS_PRODUCTION = bool(os.environ.get("RAILWAY_ENVIRONMENT")) or _raw_db_url.startswith(
+    ("postgres://", "postgresql://")
+)
+
+
+def _secret_key():
+    key = os.environ.get("SECRET_KEY")
+    if key:
+        return key
+    if IS_PRODUCTION:
+        # A hardcoded fallback would let anyone who has read this source forge
+        # a logged-in session cookie, so refuse to start instead.
+        raise RuntimeError(
+            "SECRET_KEY must be set in production. Generate one with: "
+            'python -c "import secrets; print(secrets.token_urlsafe(32))"'
+        )
+    return "dev-secret-change-me"
+
+
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+    SECRET_KEY = _secret_key()
 
     # Railway provides DATABASE_URL for the Postgres addon.
     # Falls back to local sqlite for quick local dev without Postgres running.
-    _db_url = os.environ.get("DATABASE_URL", "sqlite:///local.db")
+    _db_url = _raw_db_url
     # Use the pure-Python pg8000 driver instead of psycopg2 — psycopg2 needs
     # the native libpq.so.5 at runtime, which Nixpacks' build doesn't reliably
     # provide (a GLIBC/library-path mismatch, not just a missing-package
@@ -48,3 +70,14 @@ class Config:
     # "logged out 15 min after your last request," not "15 min after login."
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=15)
     SESSION_REFRESH_EACH_REQUEST = True
+
+    # Session cookie hardening. SameSite=Lax keeps the browser from sending
+    # the cookie on cross-site form posts (CSRF); Secure keeps it off plain
+    # http once deployed behind Railway's https.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = IS_PRODUCTION
+
+    # Caps request bodies (the OCR photo upload is the only big one), so a
+    # huge upload can't exhaust memory.
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024

@@ -243,7 +243,11 @@ def consume_authorization_code(code):
 def pkce_matches(code_challenge, code_verifier):
     if not code_challenge:
         return False
-    digest = hashlib.sha256(code_verifier.encode('ascii')).digest()
+    try:
+        verifier = code_verifier.encode('ascii')
+    except UnicodeEncodeError:
+        return False
+    digest = hashlib.sha256(verifier).digest()
     expected = urlsafe_b64encode(digest).rstrip(b'=').decode()
     return hmac.compare_digest(expected, code_challenge)
 
@@ -308,13 +312,22 @@ def register():
     if not isinstance(redirect_uris, list) or not redirect_uris:
         return jsonify({'error': 'invalid_redirect_uri',
                         'error_description': 'redirect_uris is required'}), 400
+    if len(redirect_uris) > 10:
+        return jsonify({'error': 'invalid_redirect_uri',
+                        'error_description': 'Too many redirect_uris'}), 400
     for uri in redirect_uris:
+        if not isinstance(uri, str):
+            return jsonify({'error': 'invalid_redirect_uri',
+                            'error_description': 'redirect_uris must be strings'}), 400
         parsed = urlparse(uri)
         if parsed.scheme != 'https' and parsed.hostname not in ('localhost', '127.0.0.1'):
             return jsonify({'error': 'invalid_redirect_uri',
                             'error_description': f'redirect_uri must use https: {uri}'}), 400
 
-    client = register_client(redirect_uris, body.get('client_name', 'MCP client'))
+    client_name = body.get('client_name')
+    if not isinstance(client_name, str) or not client_name.strip():
+        client_name = 'MCP client'
+    client = register_client(redirect_uris, client_name[:100])
     return jsonify({
         'client_id': client['client_id'],
         'client_secret': client['client_secret'],

@@ -100,6 +100,25 @@ def create_app():
             return None
         return jsonify({'error': 'forbidden', 'message': 'Unexpected Host header'}), 403
 
+    @app.after_request
+    def security_headers(response):
+        """Hardening for the approval page and the JSON it serves.
+
+        The sign-in page must never be framed (clickjacking), and nothing here
+        - tokens, personal data - belongs in a shared cache.
+        """
+        response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+        response.headers.setdefault('X-Frame-Options', 'DENY')
+        response.headers.setdefault('Content-Security-Policy',
+                                    "default-src 'none'; style-src 'unsafe-inline'; "
+                                    "form-action 'self' https: http://localhost:* http://127.0.0.1:*; "
+                                    "frame-ancestors 'none'; "
+                                    "base-uri 'none'")
+        response.headers.setdefault('Referrer-Policy', 'no-referrer')
+        response.headers.setdefault('Cache-Control', 'no-store')
+        response.headers.setdefault('Strict-Transport-Security', 'max-age=31536000')
+        return response
+
     @app.route('/', methods=['GET'])
     def index():
         """What this service is, without giving anything away to an anonymous caller."""
