@@ -5,7 +5,11 @@ const resultBox = document.getElementById("scan-result");
 
 function onScanSuccess(decodedText) {
     html5QrcodeScanner.clear();
-    resultBox.innerHTML = `<p>Scanned: ${decodedText}. Looking up...</p>`;
+    // textContent, not innerHTML: a scanned code (QR codes especially) can
+    // contain arbitrary text, which must never be parsed as markup.
+    const message = document.createElement("p");
+    message.textContent = `Scanned: ${decodedText}. Looking up...`;
+    resultBox.replaceChildren(message);
     window.location.href = `/scanner/result/${encodeURIComponent(decodedText)}`;
 }
 

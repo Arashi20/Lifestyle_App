@@ -24,7 +24,7 @@
 
 {% if haircut.rating %}<span class="rating">{{ haircut.rating }}/10</span>{% endif %}
 
-{% if haircut.photo_url %}
+{% if haircut.photo_url and haircut.photo_url.lower().startswith(('http://', 'https://')) %}
 <p><a href="{{ haircut.photo_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">📷 View photo</a></p>
 {% endif %}
 
