@@ -9,6 +9,6 @@
 
 <p class="card-subtitle">No barcode, or scanning isn't cooperating? <a href="{{ url_for('scanner.ocr_scan') }}">Scan ingredients from a photo instead</a>.</p>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" integrity="sha384-c9d8RFSL+u3exBOJ4Yp3HUJXS4znl9f+z66d1y54ig+ea249SpqR+w1wyvXz/lk+" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', filename='js/barcode.js') }}"></script>
 {% endblock %}

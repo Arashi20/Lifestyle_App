@@ -33,7 +33,11 @@ def create_app(config_class=Config):
     app.register_blueprint(scanner_bp)
     app.register_blueprint(watchlist_bp)
 
+    from app.security import check_same_origin, set_security_headers
+
+    app.before_request(check_same_origin)
     app.before_request(require_login)
+    app.after_request(set_security_headers)
 
     from app.seed import register_cli as register_watchlist_cli
     from app.auth import register_cli as register_auth_cli

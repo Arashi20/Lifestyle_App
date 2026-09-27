@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, request, flash, session,
 from app import db
 from app.models import Product
 from app.services.openbeautyfacts import lookup_barcode
-from app.services.ocr import extract_text_from_image, OCRUnavailableError
+from app.services.ocr import extract_text_from_image, InvalidImageError, OCRUnavailableError
 
 scanner_bp = Blueprint("scanner", __name__, url_prefix="/scanner")
 
@@ -45,7 +45,7 @@ def ocr_scan():
             return render_template("scanner_ocr.html", error="No photo selected.")
         try:
             extracted_text = extract_text_from_image(photo.stream)
-        except OCRUnavailableError as exc:
+        except (OCRUnavailableError, InvalidImageError) as exc:
             return render_template("scanner_ocr.html", error=str(exc))
         if not extracted_text.strip():
             return render_template(

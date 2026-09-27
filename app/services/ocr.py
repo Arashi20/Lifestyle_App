@@ -1,10 +1,14 @@
 import pytesseract
 from flask import current_app
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 
 class OCRUnavailableError(Exception):
     """Raised when the Tesseract OCR engine isn't installed/reachable."""
+
+
+class InvalidImageError(Exception):
+    """Raised when the upload isn't a readable image (or is absurdly large)."""
 
 
 def extract_text_from_image(file_stream) -> str:
@@ -18,7 +22,13 @@ def extract_text_from_image(file_stream) -> str:
     if tesseract_cmd:
         pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
 
-    image = Image.open(file_stream).convert("L")
+    try:
+        image = Image.open(file_stream)
+        # Pillow refuses "decompression bomb" images (tiny files that expand
+        # to gigapixels) here rather than exhausting memory.
+        image = image.convert("L")
+    except (UnidentifiedImageError, Image.DecompressionBombError, OSError) as exc:
+        raise InvalidImageError("That file isn't a photo we can read — try a JPEG or PNG.") from exc
     try:
         return pytesseract.image_to_string(image)
     except pytesseract.TesseractNotFoundError as exc:
